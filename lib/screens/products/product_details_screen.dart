@@ -5,7 +5,9 @@ import 'package:life/components/components.dart';
 import 'package:life/constants/constants.dart';
 import 'package:life/cubits/app_cubit/cubit.dart';
 import 'package:life/cubits/app_cubit/states.dart';
+import 'package:life/cubits/buy_products/cubit.dart';
 import 'package:life/models/products_model.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../../models/products_details.dart';
 
@@ -19,6 +21,7 @@ class ProductDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appCubit = AppCubit.get(context);
+    var buyProductsCubit = BuyProductsCubit.get(context);
     List<ProductDetailsModel> detailsList = [
       ProductDetailsModel(
           imageUrl: 'assets/images/sun.png',
@@ -46,8 +49,8 @@ class ProductDetailsScreen extends StatelessWidget {
                   : CrossAxisAlignment.start,
               children: [
                 Container(
-                  width: productClicked!.imageUrl == "" ? 150 : double.infinity,
-                  height: 290,
+                  width: productClicked!.imageUrl == "" ? Adaptive.w(36) : double.infinity,
+                  height: Adaptive.h(35),
                   decoration: BoxDecoration(
                     image: productClicked!.imageUrl == ""
                         ? DecorationImage(
@@ -62,7 +65,7 @@ class ProductDetailsScreen extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(25, 25, 25, 0),
+                  padding: EdgeInsets.fromLTRB(Adaptive.w(4), Adaptive.h(3), Adaptive.w(4), 0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -77,7 +80,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                   fontSize: 22,
                                   fontWeight: FontWeight.w600),
                               SizedBox(
-                                height: 8,
+                                height: Adaptive.h(.7),
                               ),
                               defaultText(
                                   text: productClicked!.description,
@@ -93,22 +96,22 @@ class ProductDetailsScreen extends StatelessWidget {
                         ],
                       ),
                       SizedBox(
-                        height: 15,
+                        height: Adaptive.h(1.5),
                       ),
-                      Container(
-                        height: 115,
+                      SizedBox(
+                        height: Adaptive.h(11.5),
                         child: ListView.separated(
                             scrollDirection: Axis.horizontal,
                             physics: BouncingScrollPhysics(),
                             itemBuilder: (context, index) =>
                                 buildDetails(detailsList[index]),
                             separatorBuilder: (context, index) => SizedBox(
-                                  width: 10,
+                                  width: Adaptive.w(4.5),
                                 ),
                             itemCount: detailsList.length),
                       ),
                       SizedBox(
-                        height: 10,
+                        height: Adaptive.h(1.7),
                       ),
                       defaultText(
                           text: 'Information',
@@ -116,10 +119,10 @@ class ProductDetailsScreen extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                           fontSize: 20),
                       SizedBox(
-                        height: 5,
+                        height: Adaptive.h(.6),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 10),
+                        padding: EdgeInsets.only(left: Adaptive.w(2.7)),
                         child: defaultText(
                           text:
                               'Native to southern Africa, snake plants are well adapted to conditions similar to those in southern regions of the United States.',
@@ -127,18 +130,18 @@ class ProductDetailsScreen extends StatelessWidget {
                         ),
                       ),
                       SizedBox(
-                        height: 10,
+                        height: Adaptive.h(2),
                       ),
                       Row(
                         children: [
                           defaultText(
                               text: 'Qty :', fontWeight: FontWeight.w500),
                           SizedBox(
-                            width: 15,
+                            width: Adaptive.w(4),
                           ),
                           Container(
-                            width: 25,
-                            height: 25,
+                            width: Adaptive.w(6.3),
+                            height:  Adaptive.h(3),
                             color: HexColor('F7F6F7'),
                             child: myIconButton(
                                 padding: EdgeInsets.zero,
@@ -151,19 +154,19 @@ class ProductDetailsScreen extends StatelessWidget {
                                 }),
                           ),
                           SizedBox(
-                            width: 14,
+                            width: Adaptive.w(3),
                           ),
                           defaultText(
                               text:
-                                  '${appCubit.productsQuantity[productIndex]}',
+                                  '${productsQuantity[productIndex]}',
                               fontWeight: FontWeight.w600,
                               fontSize: 17),
                           SizedBox(
-                            width: 14,
+                            width: Adaptive.w(3),
                           ),
                           Container(
-                            width: 25,
-                            height: 25,
+                            width: Adaptive.w(6.3),
+                            height:  Adaptive.h(3),
                             color: HexColor('F7F6F7'),
                             child: myIconButton(
                                 padding: EdgeInsets.zero,
@@ -178,13 +181,13 @@ class ProductDetailsScreen extends StatelessWidget {
                         ],
                       ),
                       SizedBox(
-                        height: 13,
+                        height: Adaptive.h(3),
                       ),
                       Center(
                           child: defaultBtn(
                               txt: 'Add To Cart'.toUpperCase(),
                               function: () {
-                                appCubit.buyProduct(productIndex);
+                                buyProductsCubit.buyProduct(productIndex);
                               },
                               backgroundColor: HexColor('1ABC36'),
                               borderRadius: 15,
@@ -201,8 +204,7 @@ class ProductDetailsScreen extends StatelessWidget {
   }
 
   Widget buildDetails(ProductDetailsModel detailsModel) => Container(
-        width: 100,
-        height: 115,
+        width: Adaptive.w(28),
         decoration: BoxDecoration(
           color: HexColor('f4fcf2'),
           borderRadius: BorderRadius.circular(15),
@@ -218,13 +220,13 @@ class ProductDetailsScreen extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                     fontSize: 18),
                 SizedBox(
-                  width: 4,
+                  width: Adaptive.w(1),
                 ),
                 Image.asset(detailsModel.imageUrl!),
               ],
             ),
             SizedBox(
-              height: 6,
+              height: Adaptive.w(.6),
             ),
             defaultText(text: detailsModel.text),
           ],

@@ -10,42 +10,36 @@ import 'package:life/cubits/app_cubit/states.dart';
 import 'package:life/network/cache_helper.dart';
 import 'package:life/screens/free_seed/free_seed_screen.dart';
 import 'package:life/screens/home_layout/home_layout.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../../constants/constants.dart';
-import '../screen_size.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // Screen(context);
-    // Screen(context);
     var appCubit = AppCubit.get(context);
     var emailController = TextEditingController(),
         passwordController = TextEditingController();
 
     return BlocConsumer<AppCubit, AppStates>(
-      listener: (context, state) {
+      listener: (context, state)async {
         if (state is LoginSuccessState) {
           // to save user's accessToken
           CacheHelper.saveData(
               key: "token", value: appCubit.userModel!.accessToken);
           token = CacheHelper.getData(key: "token");
+          appCubit.getProducts();
+          appCubit.getBlogs();
+          appCubit.getProfileData();
+
+          Navigator.of(context, rootNavigator: true).pushReplacement(
+              MaterialPageRoute(builder: (context) => const HomeLayout()));
           defaultToast(
               msg: appCubit.userModel!.message!,
               backgroundColor: defaultColor,
               textColor: Colors.white);
-          if (!appCubit.newUser) {
-            // to remove tab Bar from viewing
-            Navigator.of(context, rootNavigator: true).pushReplacement(
-                MaterialPageRoute(builder: (context) => const HomeLayout()));
-          } else {
-            Navigator.of(context, rootNavigator: true).pushReplacement(
-                MaterialPageRoute(
-                    builder: (context) => const FreeSeedScreen()));
-            appCubit.newUser = false;
-          }
         }
       },
       builder: (context, state) {
@@ -56,23 +50,20 @@ class LoginScreen extends StatelessWidget {
             child: Column(
               children: [
                 SizedBox(
-                  // width: Screen.getScreenWidth/1.2,
-                  height:450,
+                  height: Adaptive.h(50),
                   child: Padding(
-                    padding: EdgeInsets.fromLTRB(
-                        20, 20, 10, 0),
+                    padding: EdgeInsets.fromLTRB(Adaptive.w(10), Adaptive.h(2), Adaptive.w(10), 0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        defaultText(text: "Email", textColor: HexColor('6F6F6F')),
-
+                        defaultText(
+                            text: "Email", textColor: HexColor('6F6F6F')),
                         defaultTextField(
                             txtinput: TextInputType.emailAddress,
                             controller: emailController),
                         defaultText(
                             text: "Password", textColor: HexColor('6F6F6F')),
-
                         defaultTextField(
                             txtinput: TextInputType.visiblePassword,
                             controller: passwordController,
@@ -80,9 +71,10 @@ class LoginScreen extends StatelessWidget {
                             suffix: appCubit.isPass
                                 ? Icons.remove_red_eye
                                 : Icons.visibility_off_outlined,
-                            SuffixPressed: () {
+                            suffixPressed: () {
                               appCubit.changePasswordVisibility();
                             }),
+                        SizedBox(height: Adaptive.h(.4),),
                         ConditionalBuilder(
                           condition: state is! LoginLoadingState,
                           builder: (context) => Center(
@@ -101,6 +93,7 @@ class LoginScreen extends StatelessWidget {
                             ),
                           ),
                         ),
+                        SizedBox(height: Adaptive.h(.2),),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -120,16 +113,17 @@ class LoginScreen extends StatelessWidget {
                             )),
                           ],
                         ),
-
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Image(image: AssetImage('assets/images/Google.png')),
+                          children: [
+                            Image(
+                                image: AssetImage('assets/images/Google.png')),
                             SizedBox(
-                              width: 30,
+                              width: Adaptive.w(5),
                             ),
                             Image(
-                                image: AssetImage('assets/images/Facebook.png')),
+                                image:
+                                    AssetImage('assets/images/Facebook.png')),
                           ],
                         ),
                       ],

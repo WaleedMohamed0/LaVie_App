@@ -23,7 +23,7 @@ Widget defaultTextField({
   IconData? suffix,
   TextEditingController? controller,
   required TextInputType txtinput,
-  Function()? SuffixPressed,
+  Function()? suffixPressed,
   Function(String val)? onSubmit,
   Function(String value)? valid,
   TextStyle? hintStyle,
@@ -51,7 +51,7 @@ Widget defaultTextField({
           suffix,
           color: defaultColor,
         ),
-        onPressed: SuffixPressed,
+        onPressed: suffixPressed,
       ),
     ),
     validator: (value) {

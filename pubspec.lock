@@ -128,7 +128,7 @@ packages:
     source: hosted
     version: "6.1.4"
   firebase_core:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: firebase_core
       url: "https://pub.dartlang.org"
@@ -366,6 +366,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
+  responsive_sizer:
+    dependency: "direct main"
+    description:
+      name: responsive_sizer
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.1.0"
   shared_preferences:
     dependency: "direct main"
     description:

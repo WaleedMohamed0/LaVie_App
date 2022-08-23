@@ -7,6 +7,7 @@ import 'package:life/cubits/app_cubit/cubit.dart';
 import 'package:life/cubits/app_cubit/states.dart';
 import 'package:life/models/blogs_model.dart';
 import 'package:life/screens/blogs/blog_details_screen.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 
 class BlogsScreen extends StatelessWidget {
@@ -31,7 +32,7 @@ class BlogsScreen extends StatelessWidget {
                         appCubit.allBlogs[index], appCubit, context);
                   },
                   separatorBuilder: (context, index) => SizedBox(
-                        height: 15,
+                        height: Adaptive.h(1),
                       ),
                   itemCount: appCubit.allBlogs.length);
             },
@@ -48,7 +49,7 @@ class BlogsScreen extends StatelessWidget {
     return Column(
       children: [
         SizedBox(
-          height: 25,
+          height: Adaptive.h(3),
         ),
         InkWell(
           onTap: () {
@@ -66,10 +67,10 @@ class BlogsScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(30)),
                 elevation: 7,
                 child: Container(
-                  margin: const EdgeInsets.symmetric(vertical: 15),
-                  padding: EdgeInsets.only(left: 10),
-                  width: 340,
-                  height: 140,
+                  margin:  EdgeInsets.symmetric(vertical: Adaptive.h(1.2)),
+                  padding: EdgeInsets.only(left: Adaptive.w(1)),
+                  width: Adaptive.w(86),
+                  height: Adaptive.h(17),
                   child: Row(
                     children: [
                       blog.imageUrl == ""
@@ -81,13 +82,13 @@ class BlogsScreen extends StatelessWidget {
                               child: Image(
                                 image: NetworkImage(
                                     baseUrlForImage + blog.imageUrl),
-                                width: 140,
+                                width: Adaptive.w(35),
                                 fit: BoxFit.cover,
                               ),
                             ),
                       Container(
-                        margin: EdgeInsets.only(left: 15),
-                        width:  162 ,
+                        margin: EdgeInsets.only(left: Adaptive.w(3)),
+                        width:  Adaptive.w(44) ,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

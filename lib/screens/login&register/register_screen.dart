@@ -9,16 +9,14 @@ import 'package:life/cubits/app_cubit/cubit.dart';
 import 'package:life/cubits/app_cubit/states.dart';
 
 import 'package:life/screens/start_up/start_up_screen.dart';
-
-import '../screen_size.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // Screen(context);
-    var cubit = AppCubit.get(context);
+    var appCubit = AppCubit.get(context);
     var firstNameController = TextEditingController(),
         lastNameController = TextEditingController(),
         emailController = TextEditingController(),
@@ -28,16 +26,11 @@ class RegisterScreen extends StatelessWidget {
       listener: (context, state) {
         if (state is RegisterSuccessState) {
           defaultToast(
-              msg: cubit.userModel!.message!,
+              msg: appCubit.userModel!.message!,
               backgroundColor: defaultColor,
               textColor: Colors.white);
           Navigator.of(context, rootNavigator: true).pushReplacement(
               MaterialPageRoute(builder: (context) => StartUpScreen()));
-        } else if (state is RegisterErrorState) {
-          defaultToast(
-              msg: "Please enter valid data",
-              backgroundColor: Colors.red,
-              textColor: Colors.white);
         }
       },
       builder: (context, state) {
@@ -50,7 +43,7 @@ class RegisterScreen extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.fromLTRB(30, 25, 30, 0),
                   child: SizedBox(
-                    height: 500,
+                    height: Adaptive.h(60),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -70,7 +63,7 @@ class RegisterScreen extends StatelessWidget {
                               ),
                             ),
                             SizedBox(
-                              width: 15,
+                              width: Adaptive.w(4),
                             ),
                             Expanded(
                               child: Column(
@@ -92,16 +85,18 @@ class RegisterScreen extends StatelessWidget {
                         ),
                         defaultText(text: 'Password'),
                         defaultTextField(
-                          txtinput: TextInputType.text,
-                          controller: passwordController,
+                            txtinput: TextInputType.visiblePassword,
+                            controller: passwordController,
+
                         ),
                         defaultText(text: 'Confirm password'),
                         defaultTextField(
-                          txtinput: TextInputType.text,
-                          controller: confirmPasswordController,
+                            txtinput: TextInputType.visiblePassword,
+                            controller: confirmPasswordController,
+
                         ),
                         SizedBox(
-                          height: 10,
+                          height: Adaptive.h(2),
                         ),
                         ConditionalBuilder(
                           condition: state is! RegisterLoadingState,
@@ -109,9 +104,20 @@ class RegisterScreen extends StatelessWidget {
                             child: defaultBtn(
                                 txt: 'Register',
                                 function: () {
-                                  // appCubit.userLogin(
-                                  //     email: emailController.text,
-                                  //     password: passwordController.text);
+                                  if (passwordController.text ==
+                                      confirmPasswordController.text) {
+                                    appCubit.userRegister(
+                                        firstName: firstNameController.text,
+                                        lastName: lastNameController.text,
+                                        email: emailController.text,
+                                        password: passwordController.text);
+                                  }
+                                  else {
+                                    defaultToast(
+                                        msg:
+                                            'Please Enter Password same as Confirmation Password',
+                                        backgroundColor: Colors.red);
+                                  }
                                 },
                                 borderRadius: 7),
                           ),
@@ -122,7 +128,7 @@ class RegisterScreen extends StatelessWidget {
                           ),
                         ),
                         SizedBox(
-                          height: 10,
+                          height: Adaptive.h(2),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -145,11 +151,11 @@ class RegisterScreen extends StatelessWidget {
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
+                          children: [
                             Image(
                                 image: AssetImage('assets/images/Google.png')),
                             SizedBox(
-                              width: 30,
+                              width: Adaptive.w(5),
                             ),
                             Image(
                                 image:

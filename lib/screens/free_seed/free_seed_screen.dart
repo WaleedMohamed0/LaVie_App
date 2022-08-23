@@ -54,7 +54,10 @@ class FreeSeedScreen extends StatelessWidget {
                             },),
                         defaultBtn(
                             txt: 'Save For Later',
-                            function: () {},
+                            function: ()
+                            {
+                              navigateAndFinish(context, HomeLayout());
+                            },
                             textColor: HexColor('979797'),
                             backgroundColor: HexColor('F0F0F0')),
                       ],

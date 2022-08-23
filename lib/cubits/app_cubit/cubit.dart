@@ -53,7 +53,7 @@ class AppCubit extends Cubit<AppStates> {
     }).then((value) {
       userModel = UserModel.fromJson(value.data);
       emit(RegisterSuccessState());
-      logged = true;
+      // logged = true;
     }).catchError((error) {
       if (error is DioError) {
         defaultToast(
@@ -63,8 +63,6 @@ class AppCubit extends Cubit<AppStates> {
       emit(RegisterErrorState());
     });
   }
-
-  bool newUser = false;
 
   void userLogin({
     required String? email,
@@ -76,28 +74,8 @@ class AppCubit extends Cubit<AppStates> {
         endPoint: 'auth/signin',
         data: {'email': email, 'password': password}).then((value) {
       userModel = UserModel.fromJson(value.data);
-      getProducts();
-      getBlogs();
-      // FirebaseFirestore.instance
-      //     .collection('users')
-      //     .doc(userModel!.id)
-      //     .set({'userId': userModel!.id});
-      // FirebaseFirestore.instance.collection('users').get().then((value) {
-      //   for (var element in value.docs) {
-      //     // Check if user is logged before or not
-      //     if (element['userId'] != userModel!.id) {
-      //       print("NEWWWWWWWWWWWWWWWWWW");
-      //       newUser = true;
-      //     } else {
-      //       newUser = false;
-      //     }
-      //   }
-      //
-      //
-      //
-      // });
 
-      emit(LoginSuccessState());
+        emit(LoginSuccessState());
     }).catchError((error) {
       if (error is DioError) {
         defaultToast(
@@ -108,11 +86,37 @@ class AppCubit extends Cubit<AppStates> {
     });
   }
 
+  bool newUser = true;
+
+  // Future<bool> newUserCheck() async {
+  //  await FirebaseFirestore.instance.collection('users').get().then((value) {
+  //     for (var element in value.docs) {
+  //       // Check if user is logged before or not
+  //       if (element['userId'] == userModel!.id) {
+  //         print("HEFERERERER");
+  //        return false;
+  //       }
+  //     }
+  //
+  //
+  //       print("NEWWWW");
+  //       FirebaseFirestore.instance
+  //           .collection('users')
+  //           .doc(userModel!.id)
+  //           .set({'userId': userModel!.id});
+  //   });
+  // return true;
+  // }
+
+  bool gotProfileData = false;
+
   void getProfileData() {
     emit(GetProfileDataLoadingState());
     if (token != null) {
       DioHelper.getData(endPoint: 'user/me', token: token).then((value) {
         userModel = UserModel.fromJson(value.data);
+        // print(userModel!.notificationData[0].message);
+        gotProfileData = true;
         emit(GetProfileDataSuccessState());
       }).catchError((error) {
         print(error.toString());
@@ -159,10 +163,8 @@ class AppCubit extends Cubit<AppStates> {
     emit(SearchProductsSuccessState());
   }
 
-  SeedsModel? seedsModel;
   bool gotSeeds = false;
   ProductsModel? productsModel;
-  List<ProductsData> allProducts = [];
 
   void getProducts() {
     emit(GetProductsLoadingState());
@@ -248,7 +250,6 @@ class AppCubit extends Cubit<AppStates> {
   //   });
   // }
 
-  ProductsFilters? productsFilters;
   bool gotProducts = false;
 
   // void getProductsFilters() {
@@ -280,8 +281,6 @@ class AppCubit extends Cubit<AppStates> {
     HomeCategoryModel(text: 'Tools'),
   ];
 
-  List<int> productsQuantity = [];
-
   void decrementProductQuantity(index) {
     if (productsQuantity[index] > 1) {
       productsQuantity[index]--;
@@ -294,78 +293,10 @@ class AppCubit extends Cubit<AppStates> {
     emit(IncrementProductQuantityState());
   }
 
-
-  bool sameItem = false;
-
-  void buyProduct(index) {
-    for (var myCart in myCartProducts) {
-      if (myCart.name == allProducts[index].name &&
-          myCart.productPrice == allProducts[index].price) {
-        sameItem = true;
-        updateDataBase(
-            id: myCart.id,
-            itemQuantity: myCart.quantity + productsQuantity[index],
-            totalProductPrice: allProducts[index].price *
-                (myCart.quantity + productsQuantity[index]),
-            totalPrice: totalPrice,
-            productPrice: allProducts[index].price);
-      }
-    }
-    if (!sameItem) {
-      insertToDataBase(
-        name: allProducts[index].name,
-        imageUrl: allProducts[index].imageUrl == ""
-            ? "assets/images/tree.png"
-            : baseUrlForImage + allProducts[index].imageUrl,
-        itemQuantity: productsQuantity[index],
-        productPrice: allProducts[index].price,
-        totalProductPrice: allProducts[index].price * productsQuantity[index],
-        totalPrice:totalPrice ,
-      );
-    }
-    sameItem = false;
-
-
-    emit(BuyProductSuccessState());
-  }
-
-  void removeProduct(index) {
-    deleteDataBase(id: myCartProducts[index].id);
-    emit(DeleteProductState());
-  }
-
-  void decrementCartProductQuantity(index) {
-    if (myCartProducts[index].quantity > 1) {
-      myCartProducts[index].totalProductPrice -=
-          myCartProducts[index].productPrice;
-
-      updateDataBase(
-          id: myCartProducts[index].id,
-          itemQuantity: --myCartProducts[index].quantity,
-          productPrice: myCartProducts[index].productPrice,
-          totalProductPrice: myCartProducts[index].totalProductPrice,
-          totalPrice: myCartProducts[index].productPrice);
-    }
-    emit(DecrementProductQuantityState());
-  }
-
-  void incrementCartProductQuantity(index) {
-    myCartProducts[index].totalProductPrice +=
-        myCartProducts[index].productPrice;
-    // totalPrice += myCartProducts[index].productPrice;
-    updateDataBase(
-        id: myCartProducts[index].id,
-        itemQuantity: ++myCartProducts[index].quantity,
-        productPrice: myCartProducts[index].productPrice,
-        totalProductPrice: myCartProducts[index].totalProductPrice,
-        totalPrice: myCartProducts[index].productPrice);
-    emit(IncrementProductQuantityState());
-  }
-
   void getQrCodeData({required Barcode recieptId}) {
-    DioHelper.getData(endPoint: 'user/reciepts/$recieptId')
-        .then((value) {})
-        .catchError((error) {
+    DioHelper.getData(endPoint: 'user/reciepts/$recieptId').then((value) {
+      print(value.data);
+    }).catchError((error) {
       print(error.toString());
     });
   }
@@ -401,117 +332,4 @@ class AppCubit extends Cubit<AppStates> {
         'mid-level'
         'low-level'
   ];
-
-  // SQL Database
-
-  late Database database;
-
-  Future createDataBase() async {
-    database = await openDatabase(
-      'myCartItems.db', version: 1,
-      onCreate: (database, version) async {
-        await database
-            .execute(
-                'CREATE TABLE myCart (id INTEGER PRIMARY KEY , name text ,imageUrl text, itemQuantity INTEGER,productPrice INTEGER,totalProductPrice INTEGER,totalPrice INTEGER)')
-            .then((value) {
-          print("Table Created");
-          emit(CreateDBTableSuccessState());
-        }).catchError((error) {
-          print(error.toString());
-          emit(CreateDBTableErrorState());
-        });
-      },
-      onOpen: (database) async {
-        getMyCartItems(database);
-      },
-      // onUpgrade: (database , int oldVersion,int newVersion)
-      // {
-      //   if(oldVersion<newVersion)
-      //     {
-      //       database.execute("DROP TABLE myCart");
-      //       // database.execute("ALTER TABLE myCart ADD COLUMN totalPrice INTEGER;");
-      //     }
-      // }
-    );
-  }
-
-  Future insertToDataBase({
-    required String name,
-    required String imageUrl,
-    required int itemQuantity,
-    required int productPrice,
-    required int totalProductPrice,
-    required int totalPrice,
-  }) async {
-    await database
-        .rawInsert(
-            'INSERT INTO myCart (name ,imageUrl, itemQuantity ,totalProductPrice, productPrice , totalPrice) VALUES ("$name","$imageUrl" ,"$itemQuantity","$totalProductPrice","$productPrice","$totalPrice")')
-        .then((value) {
-      print('$value inserted Successfully');
-
-      getMyCartItems(database);
-      emit(ItemAddedInDBSuccessState());
-    }).catchError((error) {
-      print(error.toString());
-      emit(ItemAddedInDBErrorState());
-    });
-  }
-
-  List<MyCartProducts> myCartProducts = [];
-  int totalPrice = 0;
-
-  Future getMyCartItems(Database database) async {
-    myCartProducts = [];
-    totalPrice = 0;
-    await database.rawQuery('SELECT * FROM myCart').then((value) {
-      for (var element in value) {
-        totalPrice += element['totalProductPrice'] as int;
-        myCartProducts.add(MyCartProducts(
-          id: element['id'] as int,
-          name: element['name'] as String,
-          totalProductPrice: element['totalProductPrice'] as int,
-          imageUrl: element['imageUrl'] as String,
-          quantity: element['itemQuantity'] as int,
-          productPrice: element['productPrice'] as int,
-        ));
-      }
-      print(totalPrice);
-      emit(GotDataFromDBSuccessState());
-    }).catchError((error) {
-      emit(GotDataFromDBErrorState());
-      print(error.toString());
-    });
-  }
-
-  Future deleteDataBase({required int id}) async {
-    await database.rawDelete('DELETE FROM myCart where id = $id').then((value) {
-      // print(itemPrice);
-      getMyCartItems(database);
-      emit(ItemDeletedFromDBSuccessState());
-    }).catchError((error) {
-      print(error.toString());
-      emit(ItemDeletedFromDBErrorState());
-    });
-  }
-
-  void updateDataBase({
-    required int id,
-    int? itemQuantity,
-    int? productPrice,
-    int? totalProductPrice,
-    int? totalPrice,
-  }) async {
-    database.rawUpdate(
-        'UPDATE myCart SET itemQuantity = ? , productPrice = ? , totalProductPrice = ? , totalPrice = ? where id = ?',
-        [
-          itemQuantity,
-          productPrice,
-          totalProductPrice,
-          totalPrice,
-          id
-        ]).then((value) {
-      getMyCartItems(database);
-      emit(ItemUpdatedInDBSuccessState());
-    });
-  }
 }

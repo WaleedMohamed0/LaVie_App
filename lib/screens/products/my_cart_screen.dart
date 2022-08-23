@@ -6,15 +6,25 @@ import 'package:life/components/components.dart';
 import 'package:life/constants/constants.dart';
 import 'package:life/cubits/app_cubit/cubit.dart';
 import 'package:life/cubits/app_cubit/states.dart';
+import 'package:life/cubits/buy_products/cubit.dart';
+import 'package:life/cubits/buy_products/states.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 class MyCartScreen extends StatelessWidget {
   const MyCartScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var appCubit = AppCubit.get(context);
-    return BlocConsumer<AppCubit, AppStates>(
-      listener: (context, state) {},
+    var buyProductsCubit = BuyProductsCubit.get(context);
+    return BlocConsumer<BuyProductsCubit , BuyProductsStates>(
+      listener: (context, state)
+      {
+        if (state is DeleteProductState)
+          {
+            defaultToast(msg: 'Item Removed Successfully',
+            );
+          }
+      },
       builder: (context, state) {
         return Scaffold(
             resizeToAvoidBottomInset: false,
@@ -22,14 +32,14 @@ class MyCartScreen extends StatelessWidget {
                 title: "My Cart",
                 elevation: 0,
                 backgroundColor: Colors.grey[50]),
-            body: appCubit.myCartProducts.isEmpty
+            body: buyProductsCubit.myCartProducts.isEmpty
                 ? Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Image(image: AssetImage('assets/images/Frame.png')),
                         SizedBox(
-                          height: 15,
+                          height: Adaptive.h(3),
                         ),
                         defaultText(
                             text: 'Your cart is empty',
@@ -39,13 +49,13 @@ class MyCartScreen extends StatelessWidget {
                     ),
                   )
                 : FooterView(
-                    flex: appCubit.myCartProducts.length > 1 ? 6 : 3,
+                    flex: buyProductsCubit.myCartProducts.length > 1 ? 6 : 3,
                     footer: Footer(
                         child: Column(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 40, vertical: 20),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: Adaptive.w(8), vertical: Adaptive.h(2.4)),
                           child: Row(
                             children: [
                               defaultText(
@@ -54,8 +64,7 @@ class MyCartScreen extends StatelessWidget {
                                   fontWeight: FontWeight.bold),
                               Spacer(),
                               defaultText(
-                                  text:
-                                      "${appCubit.totalPrice} EGP",
+                                  text: "${buyProductsCubit.totalPrice} EGP",
                                   fontSize: 18,
                                   textColor: defaultColor,
                                   fontFamily: 'intervalFont'),
@@ -63,7 +72,7 @@ class MyCartScreen extends StatelessWidget {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 25),
+                          padding: EdgeInsets.only(bottom: Adaptive.h(1)),
                           child: defaultBtn(
                               txt: "Checkout",
                               function: () {},
@@ -76,23 +85,23 @@ class MyCartScreen extends StatelessWidget {
                           shrinkWrap: true,
                           physics: BouncingScrollPhysics(),
                           itemBuilder: (context, index) {
-                            return buildCartItem(appCubit, index);
+                            return buildCartItem(buyProductsCubit, index);
                           },
                           separatorBuilder: (context, index) => SizedBox(
-                                height: 20,
+                                height: Adaptive.h(.8),
                               ),
-                          itemCount: appCubit.myCartProducts.length)
+                          itemCount: buyProductsCubit.myCartProducts.length)
                     ],
                   ));
       },
     );
   }
 
-  Widget buildCartItem(AppCubit appCubit, index) {
+  Widget buildCartItem(BuyProductsCubit buyProductsCubit, index) {
     return Column(
       children: [
         SizedBox(
-          height: 25,
+          height: Adaptive.h(3),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -102,53 +111,55 @@ class MyCartScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(30)),
               elevation: 7,
               child: Container(
-                margin: EdgeInsets.symmetric(vertical: 20),
-                width: 340,
-                height: 150,
+                margin: EdgeInsets.symmetric(vertical: Adaptive.h(3.5)),
+                width: Adaptive.w(85),
+                height: Adaptive.h(17),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    appCubit.myCartProducts[index].imageUrl.contains('assets')
+                    buyProductsCubit.myCartProducts[index].imageUrl
+                            .contains('assets')
                         ? Image(
                             image: AssetImage('assets/images/tree.png'),
                           )
                         : Container(
                             alignment: AlignmentDirectional.center,
                             child: Image(
-                              image: NetworkImage(
-                                  appCubit.myCartProducts[index].imageUrl),
-                              width: 120,
+                              image: NetworkImage(buyProductsCubit
+                                  .myCartProducts[index].imageUrl),
+                              width: Adaptive.w(33),
                             ),
                           ),
                     Container(
-                      margin: EdgeInsets.only(left: 11),
+                      margin: EdgeInsets.only(left: Adaptive.w(3.5)),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Container(
+                          SizedBox(
+                            width: Adaptive.w(36),
                             child: defaultText(
-                                text: appCubit.myCartProducts[index].name,
+                                text:
+                                    buyProductsCubit.myCartProducts[index].name,
                                 linesMax: 1,
                                 textOverflow: TextOverflow.ellipsis,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 15),
-                            // width: 170,
                           ),
                           SizedBox(
-                            height: 4,
+                            height: Adaptive.h(1),
                           ),
                           defaultText(
                               text:
-                                  '${appCubit.myCartProducts[index].totalProductPrice} EGP',
+                                  '${buyProductsCubit.myCartProducts[index].totalProductPrice} EGP',
                               textColor: defaultColor,
                               fontSize: 15),
                           SizedBox(
-                            height: 14,
+                            height: Adaptive.h(2),
                           ),
                           Container(
-                            margin: EdgeInsets.only(top: 18),
+                            margin: EdgeInsets.only(top: Adaptive.h(2)),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
                               color: Colors.grey[300],
@@ -158,18 +169,18 @@ class MyCartScreen extends StatelessWidget {
                                 myIconButton(
                                     icon: Icons.remove,
                                     onPressed: () {
-                                      appCubit
+                                      buyProductsCubit
                                           .decrementCartProductQuantity(index);
                                     }),
                                 defaultText(
                                     text:
-                                        '${appCubit.myCartProducts[index].quantity}',
+                                        '${buyProductsCubit.myCartProducts[index].quantity}',
                                     fontSize: 18,
                                     textColor: Colors.black),
                                 myIconButton(
                                     icon: Icons.add,
                                     onPressed: () {
-                                      appCubit
+                                      buyProductsCubit
                                           .incrementCartProductQuantity(index);
                                     }),
                               ],
@@ -181,7 +192,7 @@ class MyCartScreen extends StatelessWidget {
                     myIconButton(
                         icon: Icons.delete,
                         onPressed: () {
-                          appCubit.removeProduct(index);
+                          buyProductsCubit.removeProduct(index);
                         },
                         size: 30),
                   ],

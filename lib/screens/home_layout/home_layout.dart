@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:life/cubits/bottom_nav/states.dart';
 import 'package:life/my_flutter_app_icons.dart';
-import 'package:life/screens/screen_size.dart';
 
 import '../../cubits/bottom_nav/cubit.dart';
 

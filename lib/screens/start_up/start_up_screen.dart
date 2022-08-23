@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:life/cubits/app_cubit/cubit.dart';
 import 'package:life/screens/login&register/login_screen.dart';
 import 'package:life/screens/login&register/register_screen.dart';
-import 'package:life/screens/screen_size.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../../components/components.dart';
 import '../../constants/constants.dart';
@@ -23,14 +23,14 @@ class StartUpScreen extends StatelessWidget {
         body: Column(
           children: [
             SizedBox(
-              height: 300,
+              height: Adaptive.h(35),
               child: AppBar(
                 backgroundColor: Colors.transparent,
                 elevation: 0,
-                toolbarHeight: 200,
+                toolbarHeight: Adaptive.h(20),
                 centerTitle: true,
                 title: Container(
-                  margin: EdgeInsets.only(top: 20),
+                  margin: EdgeInsets.only(top: Adaptive.h(12)),
                   child: Image(
                     image: AssetImage('assets/images/LaVie.png'),
                   ),
@@ -43,28 +43,27 @@ class StartUpScreen extends StatelessWidget {
                         image: AssetImage(
                           'assets/images/treeTop.png',
                         ),
-                        width: 120,
+                        width: Adaptive.w(32),
                       ),
                     ],
                   ),
                 ],
                 bottom: TabBar(
                     padding: EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 10),
+                        horizontal: Adaptive.w(10),),
                     indicator: UnderlineTabIndicator(
                         borderSide: BorderSide(width: 3.0),
                         insets:
-                            EdgeInsets.symmetric(horizontal: 10)),
+                            EdgeInsets.symmetric(horizontal: Adaptive.w(13.8))),
                     unselectedLabelColor: Colors.grey[600],
                     labelColor: Colors.green,
                     indicatorColor: Color.fromRGBO(26, 188, 0, 1),
                     tabs: [
-                      Container(
-                        width: 70,
+                      SizedBox(
+                        width: Adaptive.w(20),
                         child: Tab(text: "Sign up"),
                       ),
-                      Container(width: 70, child: Tab(text: "Login")),
+                      SizedBox(width: Adaptive.w(20), child: Tab(text: "Login")),
                     ]),
               ),
             ),

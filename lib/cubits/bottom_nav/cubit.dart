@@ -21,7 +21,7 @@ class BottomNavCubit extends Cubit<BottomNavStates> {
 
   List<Widget> bottomNavScreens = [
     const BlogsScreen(),
-    QRCodeScanner(),
+    const QRCodeScanner(),
     const NotificationScreen(),
     const ProfileScreen(),
     const HomeScreen(),

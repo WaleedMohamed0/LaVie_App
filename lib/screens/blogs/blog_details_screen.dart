@@ -3,6 +3,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:life/components/components.dart';
 import 'package:life/cubits/app_cubit/cubit.dart';
 import 'package:life/models/blogs_model.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../../constants/constants.dart';
 
@@ -13,7 +14,6 @@ class BlogDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var appCubit = AppCubit.get(context);
     return Scaffold(
       appBar: AppBar(
         foregroundColor: Colors.black,
@@ -25,7 +25,7 @@ class BlogDetailsScreen extends StatelessWidget {
         children: [
           Container(
             width: double.infinity,
-            height: 320,
+            height: Adaptive.h(35),
             decoration: BoxDecoration(
               image: blogClicked!.imageUrl == ""
                   ? DecorationImage(
@@ -40,7 +40,7 @@ class BlogDetailsScreen extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(25),
+            padding: EdgeInsets.symmetric(horizontal:Adaptive.w(5) ,vertical: Adaptive.h(4)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -50,21 +50,21 @@ class BlogDetailsScreen extends StatelessWidget {
                     fontSize: 24,
                     fontWeight: FontWeight.bold),
                 SizedBox(
-                  height: 20,
+                  height: Adaptive.h(1),
                 ),
                 defaultText(
                     text: blogClicked!.description,
                     fontSize: 15,
                     textColor: HexColor('7D7B7B')),
                 SizedBox(
-                  height: 20,
+                  height: Adaptive.h(3),
                 ),
                 defaultText(
                     text: '4 Simple Tips to treat plants',
                     fontSize: 21,
                     fontWeight: FontWeight.w600),
                 SizedBox(
-                  height: 20,
+                  height: Adaptive.h(2),
                 ),
                 ListView.separated(
                     shrinkWrap: true,
@@ -74,7 +74,7 @@ class BlogDetailsScreen extends StatelessWidget {
                         fontSize: 15,
                         textColor: HexColor('7D7B7B')),
                     separatorBuilder: (context, index) => SizedBox(
-                          height: 10,
+                          height: Adaptive.h(1.5),
                         ),
                     itemCount:4),
               ],

@@ -12,6 +12,7 @@ import 'package:life/models/forum_category.dart';
 import 'package:life/models/posts_model.dart';
 import 'package:life/my_flutter_app_icons.dart';
 import 'package:life/screens/posts/create_post_screen.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 class PostsScreen extends StatelessWidget {
   const PostsScreen({Key? key}) : super(key: key);
@@ -35,18 +36,18 @@ class PostsScreen extends StatelessWidget {
               return SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
                 child: Padding(
-                  padding: const EdgeInsets.all(15.0),
+                  padding: EdgeInsets.symmetric(horizontal:Adaptive.w(3) ,vertical: Adaptive.h(3)),
                   child: Column(
                     children: [
                       searchTextField(onSubmit: (String searchQuery) {
                         postsCubit.searchPosts(searchQuery);
                       }),
-                      const SizedBox(
-                        height: 15,
+                      SizedBox(
+                        height: Adaptive.h(2.5),
                       ),
                       Container(
-                        height: 40,
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        height: Adaptive.h(5),
+                        padding: EdgeInsets.symmetric(horizontal: Adaptive.h(1.2)),
                         child: ListView.separated(
                             scrollDirection: Axis.horizontal,
                             physics: const BouncingScrollPhysics(),
@@ -55,19 +56,20 @@ class PostsScreen extends StatelessWidget {
                                 index,
                                 postsCubit),
                             separatorBuilder: (context, index) =>
-                                const SizedBox(
-                                  width: 30,
+                                SizedBox(
+                                  width: Adaptive.w(4),
                                 ),
                             itemCount: postsCubit.forumslist.length),
                       ),
-                      const SizedBox(
-                        height: 15,
+                       SizedBox(
+                        height: Adaptive.h(3),
                       ),
                       ListView.separated(
                           shrinkWrap: true,
                           physics: const BouncingScrollPhysics(),
                           itemBuilder: (context, index) => buildPost(
                               appCubit,
+                              postsCubit,
                               postsCubit.isSearch
                                   ? postsCubit.searchList[index]
                                   : postsCubit.allPosts
@@ -75,8 +77,8 @@ class PostsScreen extends StatelessWidget {
                                           .allPostsModel!.postsData[index]
                                       : postsCubit
                                           .myPostsModel!.postsData[index]),
-                          separatorBuilder: (context, index) => const SizedBox(
-                                height: 30,
+                          separatorBuilder: (context, index) => SizedBox(
+                                height: Adaptive.h(4),
                               ),
                           itemCount: postsCubit.isSearch
                               ? postsCubit.searchList.length
@@ -114,8 +116,7 @@ class PostsScreen extends StatelessWidget {
         postsCubit.filterPosts(index);
       },
       child: Container(
-        height: 25,
-        width: 130,
+        width: Adaptive.w(28),
         alignment: AlignmentDirectional.center,
         decoration: BoxDecoration(
             color: model.fillColor,
@@ -132,22 +133,22 @@ class PostsScreen extends StatelessWidget {
     );
   }
 
-  Widget buildPost(AppCubit appCubit, PostsData post) {
+  Widget buildPost(AppCubit appCubit,PostsCubit postsCubit, PostsData post) {
     return Card(
       elevation: 10,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: EdgeInsets.symmetric(horizontal: Adaptive.w(2),vertical: Adaptive.h(2)),
             child: Row(
               children: [
                 Image.asset(
                   'assets/images/Ellipse.png',
-                  width: 65,
+                  width: Adaptive.w(14),
                 ),
-                const SizedBox(
-                  width: 15,
+                 SizedBox(
+                  width: Adaptive.w(3),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -157,8 +158,8 @@ class PostsScreen extends StatelessWidget {
                             "${appCubit.userModel!.firstName!} ${appCubit.userModel!.lastName!}",
                         fontWeight: FontWeight.bold,
                         fontSize: 17),
-                    const SizedBox(
-                      height: 5,
+                     SizedBox(
+                      height: Adaptive.h(.4),
                     ),
                     defaultText(text: 'a month ago', textColor: Colors.grey),
                   ],
@@ -170,7 +171,7 @@ class PostsScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 10),
+                padding: EdgeInsets.only(left: Adaptive.w(3)),
                 child: defaultText(
                     text: post.title,
                     textColor: defaultColor,
@@ -178,14 +179,14 @@ class PostsScreen extends StatelessWidget {
                     fontSize: 16),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 20),
+                padding: EdgeInsets.only(left: Adaptive.w(5)),
                 child: defaultText(
                     text: post.description, textColor: HexColor('8F8D8D')),
               ),
             ],
           ),
-          const SizedBox(
-            height: 15,
+           SizedBox(
+            height: Adaptive.h(2),
           ),
           post.imageUrl == ""
               ? Image.asset(
@@ -197,18 +198,23 @@ class PostsScreen extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: EdgeInsets.symmetric(horizontal: Adaptive.w(5),vertical: Adaptive.h(2)),
             child: Row(
               children: [
                 const Icon(
                   myIcons.like,
                 ),
-                const SizedBox(
-                  width: 7,
+                 SizedBox(
+                  width: Adaptive.w(2),
                 ),
-                defaultText(text: '0 Likes'),
-                const SizedBox(
-                  width: 30,
+                InkWell(
+                    onTap: ()
+                    {
+                      postsCubit.likePost(forumId: post.forumId);
+                    },
+                    child: defaultText(text: '0 Likes')),
+                 SizedBox(
+                  width: Adaptive.w(5.5),
                 ),
                 defaultText(text: '2 Replies'),
               ],
