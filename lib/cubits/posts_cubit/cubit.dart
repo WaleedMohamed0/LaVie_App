@@ -33,7 +33,7 @@ class PostsCubit extends Cubit<PostsStates> {
 
   void addPhoto() {
     imagePicker.pickImage(source: ImageSource.gallery).then((value) {
-      imagePath = File(value!.path);
+      imagePath = Io.File(value!.path);
       imageInBytes = Io.File(value.path).readAsBytesSync();
 
       indexOfDot = value.name.indexOf('.');
@@ -56,7 +56,7 @@ class PostsCubit extends Cubit<PostsStates> {
       'description': description,
       'imageBase64': imageBase64
     }).then((value) {
-      getMyPosts();
+      getAllPosts();
       emit(AddPostSuccessState());
     }).catchError((error) {
       emit(AddPostErrorState());
@@ -126,6 +126,7 @@ class PostsCubit extends Cubit<PostsStates> {
               .contains(searchQuery.toString().toLowerCase())) {
         searchList.add(product);
       }
+      print(searchList[0].title);
     }
     emit(SearchPostsSuccessState());
   }

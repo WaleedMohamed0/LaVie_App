@@ -1,22 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:life/components/components.dart';
 import 'package:life/components/components.dart';
 import 'package:life/cubits/app_cubit/states.dart';
 import 'package:life/models/blogs_model.dart';
 import 'package:life/models/free_seeds_model.dart';
-import 'package:life/models/my_cart_products.dart';
-import 'package:life/models/products_filters.dart';
 import 'package:life/models/products_model.dart';
-import 'package:life/models/seeds_model.dart';
-import 'package:life/network/cache_helper.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
-import 'package:sqflite/sqflite.dart';
-
 import '../../constants/constants.dart';
 import '../../models/home_category.dart';
 import '../../models/user_model.dart';
@@ -75,7 +66,7 @@ class AppCubit extends Cubit<AppStates> {
         data: {'email': email, 'password': password}).then((value) {
       userModel = UserModel.fromJson(value.data);
 
-        emit(LoginSuccessState());
+      emit(LoginSuccessState());
     }).catchError((error) {
       if (error is DioError) {
         defaultToast(
@@ -88,26 +79,6 @@ class AppCubit extends Cubit<AppStates> {
 
   bool newUser = true;
 
-  // Future<bool> newUserCheck() async {
-  //  await FirebaseFirestore.instance.collection('users').get().then((value) {
-  //     for (var element in value.docs) {
-  //       // Check if user is logged before or not
-  //       if (element['userId'] == userModel!.id) {
-  //         print("HEFERERERER");
-  //        return false;
-  //       }
-  //     }
-  //
-  //
-  //       print("NEWWWW");
-  //       FirebaseFirestore.instance
-  //           .collection('users')
-  //           .doc(userModel!.id)
-  //           .set({'userId': userModel!.id});
-  //   });
-  // return true;
-  // }
-
   bool gotProfileData = false;
 
   void getProfileData() {
@@ -115,7 +86,6 @@ class AppCubit extends Cubit<AppStates> {
     if (token != null) {
       DioHelper.getData(endPoint: 'user/me', token: token).then((value) {
         userModel = UserModel.fromJson(value.data);
-        // print(userModel!.notificationData[0].message);
         gotProfileData = true;
         emit(GetProfileDataSuccessState());
       }).catchError((error) {
@@ -131,6 +101,7 @@ class AppCubit extends Cubit<AppStates> {
     String? email,
     String? firstName,
     String? lastName,
+    String? address,
   }) {
     emit(UpdateUserLoadingState());
 
@@ -138,8 +109,10 @@ class AppCubit extends Cubit<AppStates> {
       'email': email,
       'firstName': firstName,
       'lastName': lastName,
+      'address': address,
     }).then((value) {
       userModel = UserModel.fromJson(value.data);
+
       emit(UpdateUserSuccessState());
     }).catchError((error) {
       emit(UpdateUserErrorState());
@@ -163,7 +136,7 @@ class AppCubit extends Cubit<AppStates> {
     emit(SearchProductsSuccessState());
   }
 
-  bool gotSeeds = false;
+  bool gotProducts = false;
   ProductsModel? productsModel;
 
   void getProducts() {
@@ -250,7 +223,7 @@ class AppCubit extends Cubit<AppStates> {
   //   });
   // }
 
-  bool gotProducts = false;
+
 
   // void getProductsFilters() {
   //   emit(GetProductsFiltersLoadingState());
@@ -315,21 +288,23 @@ class AppCubit extends Cubit<AppStates> {
     });
   }
 
-  List<String> quizQuestions = [
-    'What is the user experience?',
-    'Which of the following is not a programming language?',
-    'Python is _____ programming language.'
-  ];
+  int questionIndex = 0;
 
-  List<String> quizAnswers = [
-    'The user experience is how the developer feels about a user.',
-    'The user experience is how the user feels about interacting with or experiencing a product.'
-        'The user experience is the attitude the UX designer has about a product.',
-    'TypeScript'
-        'Python',
-    'Anaconda',
-    'high-level'
-        'mid-level'
-        'low-level'
-  ];
+  void nextQuestion() {
+    questionIndex++;
+    emit(NextQuestionSuccessState());
+  }
+
+  void previousQuestion() {
+    questionIndex--;
+    emit(PreviousQuestionSuccessState());
+  }
+  void answerSelected(int index) {
+    quizList[questionIndex].answered = true;
+    if(quizList[questionIndex].correctAnswer == index)
+      {
+        quizList[questionIndex].answerChosen = index;
+      }
+    emit(AnswerSelectedSuccessState());
+  }
 }

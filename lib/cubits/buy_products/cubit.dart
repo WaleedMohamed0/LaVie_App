@@ -86,7 +86,6 @@ class BuyProductsCubit extends Cubit<BuyProductsStates> {
           productPrice: element['productPrice'] as int,
         ));
       }
-      print(totalPrice);
       emit(GotDataFromDBSuccessState());
     }).catchError((error) {
       emit(GotDataFromDBErrorState());
@@ -96,7 +95,6 @@ class BuyProductsCubit extends Cubit<BuyProductsStates> {
 
   Future deleteDataBase({required int id}) async {
     await database.rawDelete('DELETE FROM myCart where id = $id').then((value) {
-      // print(itemPrice);
       getMyCartItems(database);
       emit(ItemDeletedFromDBSuccessState());
     }).catchError((error) {

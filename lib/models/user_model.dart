@@ -7,6 +7,7 @@ class UserModel {
   String? message;
   String? imageUrl;
   String? accessToken;
+  String? address;
   // List<NotificationData> notificationData = [];
 
   UserModel.fromJson(Map<String, dynamic> json) {
@@ -20,6 +21,7 @@ class UserModel {
       lastName = json['data']['lastName'];
       email = json['data']['email'];
       imageUrl = json['data']['imageUrl'];
+      address = json['data']['address'];
     }
      else if (message == 'Logged in Successfully' ||
         message == 'User created successfully') {
@@ -29,6 +31,7 @@ class UserModel {
       email = json['data']['user']['email'];
       imageUrl = json['data']['user']['imageUrl'];
       accessToken = json['data']['accessToken'];
+      address = json['data']['user']['address'];
     }
   }
 }

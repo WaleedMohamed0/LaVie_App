@@ -46,16 +46,22 @@ class FreeSeedScreen extends StatelessWidget {
                           controller: addressController,
                         ),
                         defaultBtn(
-                            txt: 'Send',
-                            function: () {
-                              appCubit.claimFreeSeeds(
-                                  address: addressController.text);
-                              navigateAndFinish(context, HomeLayout());
-                            },),
+                          txt: 'Send',
+                          function: () {
+                            appCubit.claimFreeSeeds(
+                                address: addressController.text);
+                            appCubit.userUpdate(
+                              email: appCubit.userModel!.email,
+                              firstName: appCubit.userModel!.firstName,
+                              lastName: appCubit.userModel!.lastName,
+                              address: addressController.text,
+                            );
+                            navigateAndFinish(context, HomeLayout());
+                          },
+                        ),
                         defaultBtn(
                             txt: 'Save For Later',
-                            function: ()
-                            {
+                            function: () {
                               navigateAndFinish(context, HomeLayout());
                             },
                             textColor: HexColor('979797'),

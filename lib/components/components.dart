@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:life/constants/constants.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 void navigateTo(context, nextPage) => Navigator.push(
       context,
@@ -125,23 +127,9 @@ Widget defaultText(
               wordSpacing: wordSpacing),
     );
 
-Widget defaultTextButton(
-        {required String text,
-        required VoidCallback fn,
-        double? fontSize,
-        textColor,
-        FontWeight? fontWeight,
-        bool isUpper = true}) =>
-    TextButton(
-        onPressed: fn,
-        child: Text(
-          isUpper ? text.toUpperCase() : text,
-          style: TextStyle(
-              fontSize: fontSize, color: textColor, fontWeight: fontWeight),
-        ));
 
 Widget defaultBtn({
-  double width = 330,
+  double? width,
   Color backgroundColor = defaultColor,
   Color textColor = Colors.white,
   bool isUpperCase = false,
@@ -150,13 +138,15 @@ Widget defaultBtn({
   required VoidCallback function,
   IconData? icon,
   double fontSize = 20,
+  Color borderColor = defaultColor,
   EdgeInsets padding = EdgeInsets.zero,
 }) {
   return Container(
-    width: width,
+    width: width ?? Adaptive.w(83),
     padding: padding,
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(borderRadius),
+      border: Border.all(color: borderColor, width: 2),
       color: backgroundColor,
     ),
     child: TextButton(
@@ -170,11 +160,6 @@ Widget defaultBtn({
   );
 }
 
-Widget myDivider() => Container(
-      width: double.infinity,
-      color: Colors.grey,
-      height: 1,
-    );
 
 Future myDialog(
         {context,
@@ -186,7 +171,6 @@ Future myDialog(
         String? labelTxt2,
         TextEditingController? controller1,
         TextEditingController? controller2,
-        bool isItListView = false,
         bool changeName = false,
         void Function()? declineFn,
         void Function()? acceptFn}) =>
@@ -197,18 +181,19 @@ Future myDialog(
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  defaultText(text: text, fontSize: 17),
+                  defaultText(text: text, fontSize: 18),
                   SizedBox(
-                    height: 12,
+                    height: Adaptive.h(3),
                   ),
                   Column(
                     children: [
                       defaultTextField(
-                          txtinput: TextInputType.text,
-                          controller: controller1,
-                          labeltxt: labelTxt1),
+                        txtinput: TextInputType.text,
+                        controller: controller1,
+                        labeltxt: labelTxt1,
+                      ),
                       SizedBox(
-                        height: 15,
+                        height: Adaptive.h(2),
                       ),
                       changeName
                           ? defaultTextField(
@@ -220,9 +205,7 @@ Future myDialog(
                   ),
                 ],
               ),
-              content: isItListView
-                  ? content
-                  : Row(
+              content: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
@@ -230,14 +213,14 @@ Future myDialog(
                               onPressed: declineFn,
                               child: defaultText(
                                   text: declineText, textColor: Colors.white)),
-                          width: 80,
+                          width: Adaptive.w(20),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
                             color: defaultColor,
                           ),
                         ),
                         Container(
-                          width: 80,
+                          width: Adaptive.w(20),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
                             color: defaultColor,
@@ -292,6 +275,37 @@ AppBar defaultAppBar(
 Future<bool?> defaultToast(
         {required String msg,
         Color textColor = Colors.white,
-        Color backgroundColor = defaultColor}) =>
-    Fluttertoast.showToast(
-        msg: msg, textColor: textColor, backgroundColor: backgroundColor);
+        Color backgroundColor = defaultColor})
+{
+  Fluttertoast.cancel();
+  return Fluttertoast.showToast(
+      msg: msg, textColor: textColor, backgroundColor: backgroundColor);
+}
+void getQuizNotification()
+{
+
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
+  const InitializationSettings initializationSettingsAndroid =
+  InitializationSettings(
+      android: AndroidInitializationSettings('@mipmap/ic_launcher'));
+
+
+  const AndroidNotificationDetails androidPlatformChannelSpecifics =
+  AndroidNotificationDetails(
+      'repeating channel id', 'repeating channel name',
+      channelDescription: 'repeating description');
+  const NotificationDetails platformChannelSpecifics =
+  NotificationDetails(android: androidPlatformChannelSpecifics);
+  flutterLocalNotificationsPlugin.periodicallyShow(
+    5,
+    'Weekly Quiz',
+    'Answer some questions and get points',
+    RepeatInterval.weekly,
+    platformChannelSpecifics,androidAllowWhileIdle: true,
+  );
+  flutterLocalNotificationsPlugin.initialize(initializationSettingsAndroid,
+      onSelectNotification: (String? x) {
+        timeForQuiz = true;
+      });
+}

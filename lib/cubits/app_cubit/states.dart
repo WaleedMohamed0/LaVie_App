@@ -50,5 +50,9 @@ class GetProductsErrorState extends AppStates{}
 class DecrementProductQuantityState extends AppStates{}
 class IncrementProductQuantityState extends AppStates{}
 
+class NextQuestionSuccessState extends AppStates{}
+class PreviousQuestionSuccessState extends AppStates{}
+class AnswerSelectedSuccessState extends AppStates{}
+
 
 

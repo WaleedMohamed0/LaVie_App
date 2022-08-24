@@ -4,8 +4,6 @@ import 'package:footer/footer.dart';
 import 'package:footer/footer_view.dart';
 import 'package:life/components/components.dart';
 import 'package:life/constants/constants.dart';
-import 'package:life/cubits/app_cubit/cubit.dart';
-import 'package:life/cubits/app_cubit/states.dart';
 import 'package:life/cubits/buy_products/cubit.dart';
 import 'package:life/cubits/buy_products/states.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -16,14 +14,13 @@ class MyCartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var buyProductsCubit = BuyProductsCubit.get(context);
-    return BlocConsumer<BuyProductsCubit , BuyProductsStates>(
-      listener: (context, state)
-      {
-        if (state is DeleteProductState)
-          {
-            defaultToast(msg: 'Item Removed Successfully',
-            );
-          }
+    return BlocConsumer<BuyProductsCubit, BuyProductsStates>(
+      listener: (context, state) {
+        if (state is DeleteProductState) {
+          defaultToast(
+            msg: 'Item Removed Successfully',
+          );
+        }
       },
       builder: (context, state) {
         return Scaffold(
@@ -31,7 +28,7 @@ class MyCartScreen extends StatelessWidget {
             appBar: defaultAppBar(
                 title: "My Cart",
                 elevation: 0,
-                backgroundColor: Colors.grey[50]),
+                backgroundColor: Colors.transparent),
             body: buyProductsCubit.myCartProducts.isEmpty
                 ? Center(
                     child: Column(
@@ -55,7 +52,8 @@ class MyCartScreen extends StatelessWidget {
                       children: [
                         Padding(
                           padding: EdgeInsets.symmetric(
-                              horizontal: Adaptive.w(8), vertical: Adaptive.h(2.4)),
+                              horizontal: Adaptive.w(8),
+                              vertical: Adaptive.h(2.4)),
                           child: Row(
                             children: [
                               defaultText(
@@ -75,7 +73,11 @@ class MyCartScreen extends StatelessWidget {
                           padding: EdgeInsets.only(bottom: Adaptive.h(1)),
                           child: defaultBtn(
                               txt: "Checkout",
-                              function: () {},
+                              function: () {
+                                defaultToast(
+                                    msg: 'Thanks For Your Order',
+                                    backgroundColor: Colors.blueGrey);
+                              },
                               borderRadius: 13),
                         )
                       ],

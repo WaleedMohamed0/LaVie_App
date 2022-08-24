@@ -41,9 +41,10 @@ class RegisterScreen extends StatelessWidget {
             child: Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.fromLTRB(30, 25, 30, 0),
+                  padding: EdgeInsets.fromLTRB(
+                      Adaptive.w(8), Adaptive.h(4.8), Adaptive.w(8), 0),
                   child: SizedBox(
-                    height: Adaptive.h(60),
+                    height: Adaptive.h(62.5),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -54,10 +55,19 @@ class RegisterScreen extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  defaultText(text: 'first Name'),
+                                  defaultText(
+                                      text: 'First Name',
+                                      fontWeight: FontWeight.w500,
+                                      textColor: HexColor('6F6F6F')),
+                                  SizedBox(
+                                    height: Adaptive.h(.5),
+                                  ),
                                   defaultTextField(
                                     txtinput: TextInputType.text,
                                     controller: firstNameController,
+                                  ),
+                                  SizedBox(
+                                    height: Adaptive.h(.5),
                                   ),
                                 ],
                               ),
@@ -69,31 +79,60 @@ class RegisterScreen extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  defaultText(text: 'last Name'),
+                                  defaultText(
+                                      text: 'Last Name',
+                                      fontWeight: FontWeight.w500,
+                                      textColor: HexColor('6F6F6F')),
+                                  SizedBox(
+                                    height: Adaptive.h(.5),
+                                  ),
                                   defaultTextField(
-                                      txtinput: TextInputType.text,
-                                      controller: lastNameController),
+                                    txtinput: TextInputType.text,
+                                    controller: lastNameController,
+                                  ),
                                 ],
                               ),
                             ),
                           ],
                         ),
-                        defaultText(text: 'E-mail'),
+                        defaultText(
+                            text: 'E-mail',
+                            fontWeight: FontWeight.w500,
+                            textColor: HexColor('6F6F6F')),
+                        SizedBox(
+                          height: Adaptive.h(.5),
+                        ),
                         defaultTextField(
                           txtinput: TextInputType.text,
                           controller: emailController,
                         ),
-                        defaultText(text: 'Password'),
-                        defaultTextField(
-                            txtinput: TextInputType.visiblePassword,
-                            controller: passwordController,
-
+                        SizedBox(
+                          height: Adaptive.h(.5),
                         ),
-                        defaultText(text: 'Confirm password'),
+                        defaultText(
+                            text: 'Password',
+                            fontWeight: FontWeight.w500,
+                            textColor: HexColor('6F6F6F')),
+                        SizedBox(
+                          height: Adaptive.h(.5),
+                        ),
                         defaultTextField(
-                            txtinput: TextInputType.visiblePassword,
-                            controller: confirmPasswordController,
-
+                          txtinput: TextInputType.visiblePassword,
+                          controller: passwordController,
+                        ),
+                        SizedBox(
+                          height: Adaptive.h(.5),
+                        ),
+                        defaultText(
+                            text: 'Confirm password',
+                            fontWeight: FontWeight.w500,
+                            textColor: HexColor('6F6F6F')),
+                        SizedBox(
+                          height: Adaptive.h(.5),
+                        ),
+                        defaultTextField(
+                          txtinput: TextInputType.visiblePassword,
+                          controller: confirmPasswordController,
                         ),
                         SizedBox(
                           height: Adaptive.h(2),
@@ -111,8 +150,7 @@ class RegisterScreen extends StatelessWidget {
                                         lastName: lastNameController.text,
                                         email: emailController.text,
                                         password: passwordController.text);
-                                  }
-                                  else {
+                                  } else {
                                     defaultToast(
                                         msg:
                                             'Please Enter Password same as Confirmation Password',
@@ -133,19 +171,19 @@ class RegisterScreen extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Expanded(
+                            Expanded(
                                 child: Divider(
-                              height: 10,
-                              color: Colors.black,
+                              thickness: 1,
+                              color: HexColor('979797'),
                             )),
                             defaultText(
                                 text: ' or continue with ',
-                                textColor: Colors.grey,
+                                textColor: HexColor('979797'),
                                 fontSize: 12),
-                            const Expanded(
+                            Expanded(
                                 child: Divider(
-                              height: 10,
-                              color: Colors.black,
+                              thickness: 1,
+                              color: HexColor('979797'),
                             )),
                           ],
                         ),

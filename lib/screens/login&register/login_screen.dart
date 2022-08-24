@@ -7,6 +7,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:life/components/components.dart';
 import 'package:life/cubits/app_cubit/cubit.dart';
 import 'package:life/cubits/app_cubit/states.dart';
+import 'package:life/cubits/posts_cubit/cubit.dart';
 import 'package:life/network/cache_helper.dart';
 import 'package:life/screens/free_seed/free_seed_screen.dart';
 import 'package:life/screens/home_layout/home_layout.dart';
@@ -20,11 +21,12 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appCubit = AppCubit.get(context);
+    var postsCubit = PostsCubit.get(context);
     var emailController = TextEditingController(),
         passwordController = TextEditingController();
 
     return BlocConsumer<AppCubit, AppStates>(
-      listener: (context, state)async {
+      listener: (context, state) async {
         if (state is LoginSuccessState) {
           // to save user's accessToken
           CacheHelper.saveData(
@@ -33,9 +35,17 @@ class LoginScreen extends StatelessWidget {
           appCubit.getProducts();
           appCubit.getBlogs();
           appCubit.getProfileData();
+          postsCubit.getAllPosts();
+          postsCubit.getMyPosts();
+          if (appCubit.userModel!.address == null) {
+            Navigator.of(context, rootNavigator: true).pushReplacement(
+                MaterialPageRoute(
+                    builder: (context) => const FreeSeedScreen()));
+          } else {
+            Navigator.of(context, rootNavigator: true).pushReplacement(
+                MaterialPageRoute(builder: (context) => const HomeLayout()));
+          }
 
-          Navigator.of(context, rootNavigator: true).pushReplacement(
-              MaterialPageRoute(builder: (context) => const HomeLayout()));
           defaultToast(
               msg: appCubit.userModel!.message!,
               backgroundColor: defaultColor,
@@ -52,18 +62,23 @@ class LoginScreen extends StatelessWidget {
                 SizedBox(
                   height: Adaptive.h(50),
                   child: Padding(
-                    padding: EdgeInsets.fromLTRB(Adaptive.w(10), Adaptive.h(2), Adaptive.w(10), 0),
+                    padding: EdgeInsets.fromLTRB(
+                        Adaptive.w(10), Adaptive.h(2), Adaptive.w(10), 0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         defaultText(
-                            text: "Email", textColor: HexColor('6F6F6F')),
+                            text: "Email",
+                            textColor: HexColor('6F6F6F'),
+                            fontWeight: FontWeight.w500),
                         defaultTextField(
                             txtinput: TextInputType.emailAddress,
                             controller: emailController),
                         defaultText(
-                            text: "Password", textColor: HexColor('6F6F6F')),
+                            text: "Password",
+                            textColor: HexColor('6F6F6F'),
+                            fontWeight: FontWeight.w500),
                         defaultTextField(
                             txtinput: TextInputType.visiblePassword,
                             controller: passwordController,
@@ -74,7 +89,9 @@ class LoginScreen extends StatelessWidget {
                             suffixPressed: () {
                               appCubit.changePasswordVisibility();
                             }),
-                        SizedBox(height: Adaptive.h(.4),),
+                        SizedBox(
+                          height: Adaptive.h(.4),
+                        ),
                         ConditionalBuilder(
                           condition: state is! LoginLoadingState,
                           builder: (context) => Center(
@@ -93,24 +110,25 @@ class LoginScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        SizedBox(height: Adaptive.h(.2),),
+                        SizedBox(
+                          height: Adaptive.h(.2),
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Expanded(
+                            Expanded(
                                 child: Divider(
-                              height: 10,
-                              color: Colors.black,
+                              color: HexColor('979797'),
+                              thickness: 1,
                             )),
                             defaultText(
                                 text: ' or continue with ',
-                                textColor: Colors.grey,
+                                textColor: HexColor('979797'),
                                 fontSize: 12),
-                            const Expanded(
+                            Expanded(
                                 child: Divider(
-                              height: 10,
-                              color: Colors.black,
-                            )),
+                                    color: HexColor('979797'),
+                                    thickness: 1)),
                           ],
                         ),
                         Row(

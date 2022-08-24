@@ -45,10 +45,9 @@ dependencies:
   qr_code_scanner: ^1.0.1
   image_picker: ^0.8.5+3
   shared_preferences: ^2.0.15
-#  firebase_core: ^1.19.2
-  cloud_firestore: ^3.3.0
   sqflite: ^2.0.2
   responsive_sizer: ^3.1.0
+  flutter_local_notifications: ^9.8.0+1
 
 dev_dependencies:
   flutter_test:

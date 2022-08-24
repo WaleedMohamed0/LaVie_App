@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:life/constants/constants.dart';
 
 class DioHelper {
   static Dio? dio;
@@ -6,7 +7,7 @@ class DioHelper {
   static init() {
     dio = Dio(BaseOptions(
 
-      baseUrl: 'https://lavie.orangedigitalcenteregypt.com/api/v1/',
+      baseUrl: baseUrl,
       headers: {
         'Content-Type': 'application/json',
       },
