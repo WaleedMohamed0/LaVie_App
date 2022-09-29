@@ -1,4 +1,4 @@
-# life
+# LaVie
 
 A new Flutter project.
 
